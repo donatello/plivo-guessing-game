@@ -38,18 +38,18 @@ def mm_response(request):
                           "You will now be redirected back to the main menu.") 
         response.addWait(length=1)
         action_url = '/guess_game/'
-        absolute_action_url = response.build_absolute_uri(action_url)
+        absolute_action_url = request.build_absolute_uri(action_url)
         response.addRedirect(body=absolute_action_url, method='POST')
         return HttpResponse(str(response), content_type='text/xml')
     else:
         if input_digit == "1":
             action_url = '/play_game/'
-            absolute_action_url = response.build_absolute_uri(action_url)
+            absolute_action_url = request.build_absolute_uri(action_url)
             response.addRedirect(body=absolute_action_url, method='POST')
             return HttpResponse(str(response), content_type='text/xml')
         else:
             action_url = '/how_to_play/'
-            absolute_action_url = response.build_absolute_uri(action_url)
+            absolute_action_url = request.build_absolute_uri(action_url)
             response.addRedirect(body=absolute_action_url, method='POST')
             return HttpResponse(str(response), content_type='text/xml')
 
