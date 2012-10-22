@@ -13,7 +13,7 @@ def index(request):
     action_url = '/main_menu_response/'
     absolute_action_url = request.build_absolute_uri(action_url)
 
-    getDigits = plivo.GetDigits(action=absolute_action_url, method='GET',
+    getDigits = plivo.GetDigits(action=absolute_action_url, method='POST',
                                 timeout=4, numDigits=4, retries=1)
     getDigits.addSpeak(body='To play the game Press 1')
     getDigits.addWait(length=1)
