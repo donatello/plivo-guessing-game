@@ -91,7 +91,8 @@ def play_game(request):
             return exit_sequence()
 
         if input_num == secret:
-            response.addSpeak("Congratulations! You have guessed the right number! You have guessed it in %d guesses - your score is %d." % (10-guesses, guesses + 1))
+            response.addSpeak("Congratulations! %d is the right number! You have guessed"
+                              " it in %d guesses - your score is %d." % (secret, 10-guesses, guesses + 1))
             response.addWait(length=2)
             response.addHangup()
             return HttpResponse(str(response), content_type='text/xml')
