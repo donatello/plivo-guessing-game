@@ -80,7 +80,7 @@ def play_game(request):
         secret = int(request.GET.get('secret', '0'))
         guesses = int(request.GET.get('guesses', '0')) - 1
         action_url = 'play_game/?secret=%d&guesses=%d' % (secret, guesses)
-        absolute_action_url = response.build_absolute_uri(action_url)
+        absolute_action_url = request.build_absolute_uri(action_url)
 
         input_num = request.POST.get('Digits', "0")
         response = plivo.Response()
