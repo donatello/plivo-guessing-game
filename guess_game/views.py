@@ -1,8 +1,10 @@
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 import plivo
 import random
 
+@csrf_exempt
 def index(request):
     response = plivo.Response()
     response.addSpeak(body='Hello, welcome to Plivo\'s demo guessing game app!')
@@ -11,7 +13,7 @@ def index(request):
     action_url = '/main_menu_response/'
     absolute_action_url = request.build_absolute_uri(action_url)
 
-    getDigits = plivo.GetDigits(action=absolute_action_url, method='POST',
+    getDigits = plivo.GetDigits(action=absolute_action_url, method='GET',
                                 timeout=4, numDigits=4, retries=1)
     getDigits.addSpeak(body='To play the game Press 1')
     getDigits.addWait(length=1)
@@ -23,6 +25,7 @@ def index(request):
 
     return HttpResponse(str(response), content_type='text/xml')
 
+@csrf_exempt
 def mm_response(request):
     if request.method == 'GET':
         return exit_sequence()
@@ -50,12 +53,14 @@ def mm_response(request):
             response.addRedirect(body=absolute_action_url, method='POST')
             return HttpResponse(str(response), content_type='text/xml')
 
+@csrf_exempt
 def exit_sequence(msg="Oops! There was an error!"):
     response = plivo.Response()
     response.addSpeak("We will hangup now.")
     response.addHangup()
     return HttpResponse(str(response), content_type='text/xml')
 
+@csrf_exempt
 def play_game(request):
     if not request.GET.get('guesses', None):
         secret = random.randint(1, 100)
@@ -108,6 +113,7 @@ def play_game(request):
                 response.addHangup()
             return HttpResponse(str(response), content_type='text/xml')
 
+@csrf_exempt
 def how_to_play(request):
     response = plivo.Response()
     response.addSpeak(body="I will think of a secret number that you will have to guess.")
