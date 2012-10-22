@@ -4,10 +4,12 @@ from django.views.decorators.csrf import csrf_exempt
 import plivo
 import random
 
+
 @csrf_exempt
 def index(request):
     response = plivo.Response()
-    response.addSpeak(body='Hello, welcome to Plivo\'s demo guessing game app!')
+    response.addSpeak(body="Hello, welcome to Plivo's "
+                      "demo guessing game app!")
     response.addWait(length=2)
 
     action_url = '/main_menu_response/'
@@ -25,6 +27,7 @@ def index(request):
 
     return HttpResponse(str(response), content_type='text/xml')
 
+
 @csrf_exempt
 def mm_response(request):
     if request.method == 'GET':
@@ -35,7 +38,7 @@ def mm_response(request):
     input_digit = post_args.get('Digits', None)
     if input_digit != "1" and input_digit != "2":
         response.addSpeak(body="Sorry, we did not receive a valid response. "
-                          "You will now be redirected back to the main menu.") 
+                          "You will now be redirected back to the main menu.")
         response.addWait(length=1)
         action_url = '/guess_game/'
         absolute_action_url = request.build_absolute_uri(action_url)
@@ -53,12 +56,14 @@ def mm_response(request):
             response.addRedirect(body=absolute_action_url, method='POST')
             return HttpResponse(str(response), content_type='text/xml')
 
+
 @csrf_exempt
 def exit_sequence(msg="Oops! There was an error!"):
     response = plivo.Response()
     response.addSpeak("We will hangup now.")
     response.addHangup()
     return HttpResponse(str(response), content_type='text/xml')
+
 
 @csrf_exempt
 def play_game(request):
@@ -71,7 +76,8 @@ def play_game(request):
         absolute_action_url = request.build_absolute_uri(action_url)
         getDigits = plivo.GetDigits(action=absolute_action_url, method='POST',
                                     timeout=10, numDigits=4, retries=1)
-        getDigits.addSpeak(body="I have thought of a secret number between one and one hundred. "
+        getDigits.addSpeak(body="I have thought of a secret number between "
+                           "one and one hundred. "
                            "You have ten guesses to find it!")
         getDigits.addSpeak(body="You can make your guess now.")
         response.add(getDigits)
@@ -91,8 +97,10 @@ def play_game(request):
             return exit_sequence()
 
         if input_num == secret:
-            response.addSpeak("Congratulations! %d is the right number! You have guessed"
-                              " it in %d guesses - your score is %d." % (secret, 10-guesses, guesses + 1))
+            response.addSpeak("Congratulations! %d is the right number!"
+                              " You have guessed"
+                              " it in %d guesses - your score is %d." %
+                              (secret, 10 - guesses, guesses + 1))
             response.addWait(length=2)
             response.addHangup()
             return HttpResponse(str(response), content_type='text/xml')
@@ -103,8 +111,10 @@ def play_game(request):
                 answer = "Sorry, you guessed %d. The secret is greater."
             response.addSpeak(answer % (input_num))
             if guesses > 0:
-                getDigits = plivo.GetDigits(action=absolute_action_url, method='POST',
-                                            timeout=10, numDigits=4, retries=1)
+                getDigits = plivo.GetDigits(action=absolute_action_url,
+                                            method='POST',
+                                            timeout=10, numDigits=4,
+                                            retries=1)
                 getDigits.addWait(length=1)
                 getDigits.addSpeak("You have %d guesses remaining! Guess again!" % guesses)
                 response.add(getDigits)
@@ -113,6 +123,7 @@ def play_game(request):
                 response.addSpeak("Sorry, you don't have any remaining guesses. The secret was %d." % (secret))
                 response.addHangup()
             return HttpResponse(str(response), content_type='text/xml')
+
 
 @csrf_exempt
 def how_to_play(request):
